@@ -1,13 +1,28 @@
 import { useState } from "react";
 import reactLogo from "/react.svg";
 import viteLogo from "/vite.svg";
-import "../styles/App.css";
 
 function App() {
   const [count, setCount] = useState(0);
 
   return (
     <div className="App">
+      <div className="dropdown">
+        <label tabIndex={0} className="btn m-1">
+          Click
+        </label>
+        <ul
+          tabIndex={0}
+          className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52"
+        >
+          <li>
+            <a>Item 1</a>
+          </li>
+          <li>
+            <a>Item 2</a>
+          </li>
+        </ul>
+      </div>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
