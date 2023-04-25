@@ -3,7 +3,7 @@ import logos from "/NavLog.png";
 
 const Navbar = () => {
   return (
-    <div className="navbar bg-[#0A142F] px-32 sticky top-0 text-gray-300">
+    <div className="navbar bg-[#0A142F] px-32 sticky top-0 text-gray-300 z-50">
       <div className="flex-1">
         <a className="btn btn-ghost normal-case text-xl hover:bg-inherit">
           <img src={logos} alt="logo-event-planner" />

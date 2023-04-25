@@ -9,7 +9,7 @@ interface Props {
 
 const Layout: FC<Props> = (props) => {
   return (
-    <div className="w-full h-screen overflow-auto flex flex-col bg-[#093545]">
+    <div className="w-full h-full flex flex-col bg-[#093545]">
       <Navbar />
       <div className="h-full w-full py-3 px-3 flex flex-col items-center justify-center ">
         {props.children}
