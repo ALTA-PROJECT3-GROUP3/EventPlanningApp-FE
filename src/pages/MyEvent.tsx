@@ -14,11 +14,10 @@ interface HomeCap {
   id: number;
 }
 
-const Home: FC = () => {
+const MyEvent: FC = () => {
   const [datas, setDatas] = useState<HomeCap[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [tabValue, setTabValue] = useState(1);
-  const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
     fetchData();
@@ -45,8 +44,10 @@ const Home: FC = () => {
     <Layout>
       <div className="max-h-[200vh] py-12 flex flex-col items-center w-full">
         <p className="font-['Lexend_Deca'] text-6xl text-white">My Event</p>
-        <hr className="w-[60%] h-1 mx-auto my-6 bg-[#20DF7F] border-0 rounded " />
-        <div data-theme="mytheme" className="tabs tabs-boxed gap-9 bg-inherit">
+        <div
+          data-theme="mytheme"
+          className="tabs tabs-boxed gap-9 bg-inherit mt-5"
+        >
           <a
             className={`${tabValue === 0 ? "tab-active" : ""} tab tab-lg`}
             onClick={() => setTabValue(0)}
@@ -68,9 +69,10 @@ const Home: FC = () => {
           </a>
         </div>
 
+        <hr className="w-[60%] h-1 mx-auto mt-1 mb-3 bg-[#20DF7F] border-0 rounded " />
         <div className="flex justify-center">
           {tabValue === 0 ? (
-            <div className="w-[55%] mt-3 grid gap-3 grid-cols-1 overflow-auto">
+            <div className="w-[55%] mt-2 grid gap-3 grid-cols-1 overflow-auto">
               {loading ? (
                 <Spinner />
               ) : (
@@ -89,7 +91,7 @@ const Home: FC = () => {
               )}
             </div>
           ) : tabValue === 1 ? (
-            <div className="w-[55%] mt-3 grid gap-3 grid-cols-1 overflow-auto">
+            <div className="w-[55%] mt-2 grid gap-3 grid-cols-1 overflow-auto">
               {loading ? (
                 <Spinner />
               ) : (
@@ -123,4 +125,4 @@ const Home: FC = () => {
   );
 };
 
-export default Home;
+export default MyEvent;
