@@ -1,10 +1,11 @@
-import { FC, useState, useEffect, FormEvent } from "react";
+import { FC, useState, useEffect, FormEvent, Children } from "react";
 import axios from "axios";
 
 import { CardComment, CardParticipant } from "../components/Cards";
 import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
+import { ModalPayment, InputPayment, RadioBank } from "../components/Modals";
 import withReactContent from "sweetalert2-react-content";
 
 interface DetailCapType {
@@ -36,7 +37,15 @@ interface DetailCommentType {
   user_name: string;
 }
 
-interface objPostType {}
+interface objPostType {
+  comment: string;
+  id: number;
+}
+
+interface objReservType {
+  id: number;
+  phone: string;
+}
 
 const DetailEvent: FC = () => {
   const MySwal = withReactContent(Swal);
@@ -46,6 +55,7 @@ const DetailEvent: FC = () => {
   const [ticket, setTicket] = useState<Partial<DetailTicketType[]>>([]);
   const [getComment, setGetComment] = useState<DetailCommentType[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [payIsDisabled, setpayIsDisabled] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
   const [isHosted, setIsHosted] = useState<boolean>(false);
 
@@ -54,9 +64,13 @@ const DetailEvent: FC = () => {
     id: 0,
   });
 
+  const [objReserv, setObjReserv] = useState<objReservType>({
+    phone: "",
+    id: 0,
+  });
+
   useEffect(() => {
     fetchData();
-    // alterFetch();
   }, []);
 
   useEffect(() => {
@@ -64,7 +78,13 @@ const DetailEvent: FC = () => {
     setIsDisabled(!isEmpty);
   }, [objPost]);
 
+  useEffect(() => {
+    const isEmpty = Object.values(objReserv).every((val) => val !== "");
+    setpayIsDisabled(!isEmpty);
+  }, [objReserv]);
+
   async function fetchData() {
+    //fetch untuk param, untuk tau id event
     await axios
       .get(
         "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/2"
@@ -127,8 +147,86 @@ const DetailEvent: FC = () => {
       .finally(() => setIsDisabled(false));
   }
 
+  function handleReservation(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setpayIsDisabled(true);
+
+    axios
+      .post(
+        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/reservations",
+        objReserv
+      )
+      .then((response) => {
+        const { data, message } = response.data;
+        console.log(objReserv);
+        MySwal.fire({
+          title: "Success",
+          text: message,
+          icon: "success",
+          showCancelButton: false,
+        }).then((result) => {});
+      })
+      .catch((error) => {
+        const { data } = error.response;
+        MySwal.fire({
+          title: "Failed",
+          text: data.message,
+          showCancelButton: false,
+          icon: "error",
+        });
+      })
+      .finally(() => setpayIsDisabled(false));
+  }
+
   return (
     <Layout>
+      <ModalPayment>
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-xl font-bold">PESAN TIKET</p>
+          <p className="text-lg font-semibold">{datas.name}</p>
+          <form
+            className="w-full h-full flex flex-col gap-3"
+            onSubmit={(event) => handleReservation(event)}
+          >
+            <div className="grid grid-cols-1 gap-3 px-4">
+              {ticket.map((t, idx) => {
+                return (
+                  <InputPayment
+                    name="Ticket Name"
+                    id={`input-ticket-quota ${idx}`}
+                    defaultValue={0}
+                    placeholder="jumlah tiket yang anda inginkan"
+                  />
+                );
+              })}
+              <InputPayment
+                name="Nomer Telepon"
+                id="input-ticket-validation-number"
+                type="number"
+                placeholder="+62 ..."
+                onChange={(event) =>
+                  setObjReserv({ ...objReserv, phone: event.target.value })
+                }
+              />
+            </div>
+            <p className="px-4 mt-3">Metode Pembayaran</p>
+            <div className="grid grid-cols-2 gap-3 px-4">
+              <RadioBank id="bca" />
+              <RadioBank id="bri" />
+              <RadioBank id="mandiri" />
+              <RadioBank id="bni" />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-primary w-32 mx-auto mt-4 tracking-wider text-white"
+              disabled={payIsDisabled}
+            >
+              PAYMENT
+            </button>
+          </form>
+        </div>
+      </ModalPayment>
+      {/* ^^ -- modal -- ^^ */}
       <div className="max-h-fit gap-4 py-12 flex flex-col items-center w-full">
         <div className=" w-[80%] h-[90%] items-start ">
           <p className="font-['Lexend_Deca'] text-2xl text-white">
@@ -138,6 +236,7 @@ const DetailEvent: FC = () => {
             Hosted By: {datas.host_name}
           </p>
         </div>
+        {/* Image & handle*/}
         <div className="w-[80%] h-[90%] p-5 gap-6 flex flex-col justify-center items-center border-2 border-[#427385] rounded-2xl">
           <div className="w-full h-full flex gap-8">
             <div className="w-[48%] bg-slate-200 rounded-2xl flex justify-center">
@@ -231,9 +330,12 @@ const DetailEvent: FC = () => {
                 data-theme="mytheme"
                 className="bg-inherit card-actions justify-end"
               >
-                <button className="btn btn-primary w-32 tracking-wider  text-white">
+                <label
+                  htmlFor="my-modal-payment"
+                  className="btn btn-primary w-32 tracking-wider  text-white"
+                >
                   Join Event
-                </button>
+                </label>
               </div>
             )}
           </div>

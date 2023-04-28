@@ -83,7 +83,7 @@ export const CardComment: FC<CardCommentCap> = (props) => {
       data-theme="mytheme"
       className=" card card-side bg-inherit flex gap-5 items-center p-3"
     >
-      <figure className="w-[15%] bg-[#427385] p-2 rounded-full">
+      <figure className="w-[12%] bg-[#427385] p-2 rounded-full">
         <img
           className="w-full h-auto aspect-square"
           src={pictures}
