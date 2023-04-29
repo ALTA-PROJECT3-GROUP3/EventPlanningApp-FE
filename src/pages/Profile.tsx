@@ -45,54 +45,6 @@ const Profile = () => {
           </label>
         </div>
 
-        {/* <input type="checkbox" id="my-modal-3" className="modal-toggle" />
-        <div className="modal">
-          <div className="modal-box relative bg-white max-w-[40rem] hero min-h-[91%]">
-            <label
-              htmlFor="my-modal-3"
-              className="btn btn-sm btn-circle absolute right-[1rem] top-[-11px]"
-            >
-              ✕
-            </label>
-            <div className="hero-content flex-col lg:flex-row">
-              <div className="p-5 lg:w-full mt-5">
-                <form className="flex flex-col justify-center items-center">
-                  <div className="bg-cover bg-center w-32 h-32 -mt-16 rounded-full border-4 border-white profil-content"></div>
-                  <label className="block font-medium text-gray-700">
-                    Choose Photo
-                  </label>
-                  <input
-                    type="file"
-                    className="file-input max-w-xs bg-white"
-                    placeholder="Choose Photo"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Email Address"
-                    className=" border-2 border-slate-300 input w-full max-w-md bg-white m-2"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    className=" border-2 border-slate-300 input w-full max-w-md bg-white m-2 "
-                  />
-                  <input
-                    type="password"
-                    placeholder="Create Password"
-                    className=" border-2 border-slate-300 input w-full max-w-md bg-white m-2 "
-                  />
-                  <input
-                    type="text"
-                    placeholder="Address"
-                    className=" border-2 border-slate-300 input w-full max-w-md bg-white m-2 "
-                  />
-                  <button className="btn w-full m-3 wfu">Save Changes</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div> */}
-
         <input type="checkbox" id="my-modal-3" className="modal-toggle" />
         <div className="modal">
           <div className="modal-box relative max-w-screen-sm bg-[#c8dac5] py-9">
