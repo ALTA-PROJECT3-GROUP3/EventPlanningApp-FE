@@ -3,11 +3,11 @@ import React from "react";
 import image from "/defaultImg.png";
 import Layout from "../components/Layout";
 
-const AddEvent = () => {
+const EditEvent = () => {
   return (
     <Layout>
       <h1 className="w-[80%] text-3xl font-extrabold text-[#20df7f] mt-10 mb-4">
-        Add Event
+        Edit Event
       </h1>
 
       <div className="mb-12 flex border-4 border-[#427385] rounded-xl w-4/5 h-full">
@@ -101,9 +101,14 @@ const AddEvent = () => {
                 Add Ticket
               </button>
             </form>
-            <button className="ms-[79%] w-[13%] py-5 my-12 tracking-wide text-white transition-colors duration-200 transform bg-green-600 rounded-xl shadow-2xl hover:bg-green-800 focus:outline-none focus:bg-black-600 text-xl">
-              Save
-            </button>
+            <div className="flex flex-row gap-4 ms-[66%] my-12">
+              <button className="w-full px-12 py-5 tracking-wide text-white transition-colors duration-200 transform bg-red-600 rounded-xl shadow-2xl hover:bg-red-800 focus:outline-none focus:bg-black-600 text-xl">
+                Delete
+              </button>
+              <button className="w-full px-14 py-5 tracking-wide text-white transition-colors duration-200 transform bg-green-600 rounded-xl shadow-2xl hover:bg-green-800 focus:outline-none focus:bg-black-600 text-xl">
+                Save
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -111,4 +116,4 @@ const AddEvent = () => {
   );
 };
 
-export default AddEvent;
+export default EditEvent;
