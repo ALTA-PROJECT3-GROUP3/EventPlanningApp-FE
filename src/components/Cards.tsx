@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 
-interface CardHomeCap {
+interface cardHomeCapType {
   name: string;
   date: string;
   host_name: string;
@@ -8,18 +8,22 @@ interface CardHomeCap {
   image: string;
 }
 
-interface CardParticipantCap {
+interface cardParticipantCapType {
   user_name: string;
   pictures: string;
 }
 
-interface CardCommentCap {
+interface cardCommentCapType {
   comment: string;
   pictures: string;
   user_name: string;
 }
+interface tabelCapType {
+  name?: string;
+  data?: string;
+}
 
-export const CardHome: FC<CardHomeCap> = (props) => {
+export const CardHome: FC<cardHomeCapType> = (props) => {
   const { name, date, host_name, quota, image } = props;
   const dated = new Date(date);
   const formattedDate = dated.toLocaleDateString("en-GB", {
@@ -55,7 +59,7 @@ export const CardHome: FC<CardHomeCap> = (props) => {
   );
 };
 
-export const CardParticipant: FC<CardParticipantCap> = (props) => {
+export const CardParticipant: FC<cardParticipantCapType> = (props) => {
   const { user_name, pictures } = props;
 
   return (
@@ -75,7 +79,7 @@ export const CardParticipant: FC<CardParticipantCap> = (props) => {
   );
 };
 
-export const CardComment: FC<CardCommentCap> = (props) => {
+export const CardComment: FC<cardCommentCapType> = (props) => {
   const { user_name, pictures, comment } = props;
 
   return (
@@ -96,6 +100,22 @@ export const CardComment: FC<CardCommentCap> = (props) => {
         </p>
         <p className="mt-2">{comment} Attendees</p>
       </div>
+    </div>
+  );
+};
+
+export const TabelTransaksi: FC<tabelCapType> = (props) => {
+  const { name, data } = props;
+  return (
+    <div className="w-[70%] h-full bg-[#224957] p-3 rounded-2xl text-white">
+      <table className="border-separate w-full">
+        <tbody>
+          <tr>
+            <td className="w-[30%]">{name}</td>
+            <td className="">: {data}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
