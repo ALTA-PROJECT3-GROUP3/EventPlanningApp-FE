@@ -23,7 +23,7 @@ interface DetailTicketType {
   ticket_name: string;
 }
 
-const DetailEvent: FC = () => {
+const Invoice: FC = () => {
   const [payment, setPayment] = useState<Partial<DetailPaymentType>>({});
   const [ticket, setTicket] = useState<Partial<DetailTicketType[]>>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -150,4 +150,4 @@ const DetailEvent: FC = () => {
   );
 };
 
-export default DetailEvent;
+export default Invoice;

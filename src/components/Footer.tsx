@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { FaFacebookF, FaLinkedinIn, FaTwitter } from "react-icons/fa";
 import logos from "/NavLog.png";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 
 const Footer: FC = () => {
   return (
@@ -17,9 +18,9 @@ const Footer: FC = () => {
 
       <div className="flex items-center justify-between w-full px-32">
         <div>
-          <a className="cursor-pointer">
+          <NavLink to="/" id="to-home" className="cursor-pointer">
             <img src={logos} alt="logo-event-planner" />
-          </a>
+          </NavLink>
         </div>
         <p>Copyright © 2023 ALTA-PROJECT3-GROUP3. All Rights Reserved.</p>
         <div className="grid grid-flow-col gap-3">
