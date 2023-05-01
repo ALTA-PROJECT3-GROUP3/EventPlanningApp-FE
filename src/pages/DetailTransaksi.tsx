@@ -41,7 +41,7 @@ interface DetailParticipantsType {
   pictures: string;
 }
 
-const DetailEvent: FC = () => {
+const DetailTransaksi: FC = () => {
   const MySwal = withReactContent(Swal);
 
   const [datas, setDatas] = useState<Partial<DetailCapType>>({});
@@ -212,4 +212,4 @@ const DetailEvent: FC = () => {
   );
 };
 
-export default DetailEvent;
+export default DetailTransaksi;

@@ -1,18 +1,37 @@
-import React from "react";
+import {
+  FaSignInAlt,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaCalendarPlus,
+} from "react-icons/fa";
+import { FC } from "react";
 import logos from "/NavLog.png";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar: FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="navbar bg-[#0A142F] px-32 sticky top-0 text-gray-300 z-50">
       <div className="flex-1">
-        <a className="btn btn-ghost normal-case text-xl hover:bg-inherit">
+        <NavLink
+          to="/"
+          id="to-homepage"
+          className="btn btn-ghost normal-case text-xl hover:bg-inherit"
+        >
           <img src={logos} alt="logo-event-planner" />
-        </a>
+        </NavLink>
       </div>
-      <div className="flex-none">
+      <div data-theme="mytheme" className="flex-none bg-inherit">
         <ul className="menu menu-horizontal px-1 ">
           <li>
-            <a className="active:bg-[#080f25] hover:bg-inherit">Dashboard</a>
+            <NavLink
+              id="to-dashboard"
+              to={`/u/username`}
+              className=" text-slate-300 bg-inherit hover:bg-primary "
+            >
+              Dashboard
+            </NavLink>
           </li>
           <li tabIndex={0} className="dropdown dropdown-end">
             <a className="active:bg-[#080f25] hover:bg-inherit">
@@ -31,13 +50,42 @@ const Navbar = () => {
               className="dropdown-content text-gray-800 menu p-2 shadow bg-gray-100 rounded-box w-52 "
             >
               <li>
-                <a className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800">
+                <NavLink
+                  id="to-add-event"
+                  to={`/u/username/add_event`}
+                  className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
+                >
+                  <FaCalendarPlus className="h-5 w-5" />
+                  Add Event
+                </NavLink>
+              </li>
+              <div className="my-2" />
+              <li>
+                <NavLink
+                  id="to-profile"
+                  to={`/u/username/profile`}
+                  className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
+                >
+                  <FaUserCircle className="h-5 w-5" />
                   View Profile
+                </NavLink>
+              </li>
+              <li>
+                <a
+                  id="btn-logout"
+                  className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
+                >
+                  <FaSignOutAlt className="h-5 w-5" />
+                  Log Out
                 </a>
               </li>
               <li>
-                <a className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800">
-                  Log Out
+                <a
+                  id="btn-login"
+                  className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
+                >
+                  <FaSignInAlt className="h-5 w-5" />
+                  Log In
                 </a>
               </li>
             </ul>
