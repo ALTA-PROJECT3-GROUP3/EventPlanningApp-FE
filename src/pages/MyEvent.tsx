@@ -85,6 +85,7 @@ const MyEvent: FC = () => {
                       image={data.image}
                       name={data.name}
                       quota={data.quota}
+                      id={data.id}
                     />
                   );
                 })
@@ -93,7 +94,9 @@ const MyEvent: FC = () => {
           ) : tabValue === 1 ? (
             <div className="w-[55%] mt-2 grid gap-3 grid-cols-1 overflow-auto">
               {loading ? (
-                <Spinner />
+                <div className="w-a h-96 flex justify-center items-center">
+                  <Spinner />
+                </div>
               ) : (
                 datas.map((data, idx) => {
                   return (
@@ -104,17 +107,11 @@ const MyEvent: FC = () => {
                       image={data.image}
                       name={data.name}
                       quota={data.quota}
+                      id={data.id}
                     />
                   );
                 })
               )}
-              <CardHome
-                date="2023-05-01T10:00:00Z"
-                host_name="Jakarta Media Post"
-                image="/defaultImg.png"
-                name="Webinar: Level Up Your Business Through SEO"
-                quota={40}
-              />
             </div>
           ) : (
             <p>NONE</p>

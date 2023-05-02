@@ -7,6 +7,7 @@ import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
 import { ModalPayment, InputPayment, RadioBank } from "../components/Modals";
 import withReactContent from "sweetalert2-react-content";
+import { useNavigate } from "react-router-dom";
 
 interface DetailCapType {
   name: string;
@@ -49,6 +50,7 @@ const DetailTransaksi: FC = () => {
   const [payment, setPayment] = useState<Partial<DetailPaymentType>>({});
   const [getTicket, setGetTicket] = useState<Partial<DetailTicketType[]>>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchData();
@@ -177,7 +179,12 @@ const DetailTransaksi: FC = () => {
               <button className="btn btn-primary w-32 tracking-wider text-white">
                 Bayar
               </button>
-              <button className="btn btn-outline w-32 btn-primary tracking-wider text-white">
+              <button
+                onClick={() => {
+                  navigate(`/event/params/payment/invoice`);
+                }}
+                className="btn btn-outline w-32 btn-primary tracking-wider text-white"
+              >
                 Invoice
               </button>
             </div>

@@ -1,4 +1,5 @@
 import { FC, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface cardHomeCapType {
   name: string;
@@ -6,6 +7,7 @@ interface cardHomeCapType {
   host_name: string;
   quota: number;
   image: string;
+  id: number;
 }
 
 interface cardParticipantCapType {
@@ -24,7 +26,8 @@ interface tabelCapType {
 }
 
 export const CardHome: FC<cardHomeCapType> = (props) => {
-  const { name, date, host_name, quota, image } = props;
+  const { name, date, host_name, quota, image, id } = props;
+  const navigate = useNavigate();
   const dated = new Date(date);
   const formattedDate = dated.toLocaleDateString("en-GB", {
     weekday: "long",
@@ -50,7 +53,12 @@ export const CardHome: FC<cardHomeCapType> = (props) => {
         <p className="mt-3">{quota} Attendees</p>
 
         <div className="card-actions justify-end">
-          <button className="btn btn-primary tracking-wider text-white">
+          <button
+            onClick={() => {
+              navigate(`/event/${id}`);
+            }}
+            className="btn btn-primary tracking-wider text-white"
+          >
             Detail
           </button>
         </div>

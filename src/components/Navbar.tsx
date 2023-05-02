@@ -80,13 +80,14 @@ const Navbar: FC = () => {
                 </a>
               </li>
               <li>
-                <a
+                <NavLink
+                  to="/login"
                   id="btn-login"
                   className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
                 >
                   <FaSignInAlt className="h-5 w-5" />
                   Log In
-                </a>
+                </NavLink>
               </li>
             </ul>
           </li>

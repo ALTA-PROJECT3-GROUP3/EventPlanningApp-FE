@@ -101,13 +101,15 @@ const EditEvent = () => {
                 Add Ticket
               </button>
             </form>
-            <div className="flex flex-row gap-4 ms-[66%] my-12">
-              <button className="w-full px-12 py-5 tracking-wide text-white transition-colors duration-200 transform bg-red-600 rounded-xl shadow-2xl hover:bg-red-800 focus:outline-none focus:bg-black-600 text-xl">
-                Delete
-              </button>
-              <button className="w-full px-14 py-5 tracking-wide text-white transition-colors duration-200 transform bg-green-600 rounded-xl shadow-2xl hover:bg-green-800 focus:outline-none focus:bg-black-600 text-xl">
-                Save
-              </button>
+            <div className="flex justify-end w-full my-12">
+              <div className="flex flex-row gap-4">
+                <button className="w-full px-12 py-5 tracking-wide text-white transition-colors duration-200 transform bg-red-600 rounded-xl shadow-2xl hover:bg-red-800 focus:outline-none focus:bg-black-600 text-xl">
+                  Delete
+                </button>
+                <button className="w-full px-14 py-5 tracking-wide text-white transition-colors duration-200 transform bg-green-600 rounded-xl shadow-2xl hover:bg-green-800 focus:outline-none focus:bg-black-600 text-xl">
+                  Save
+                </button>
+              </div>
             </div>
           </form>
         </div>
