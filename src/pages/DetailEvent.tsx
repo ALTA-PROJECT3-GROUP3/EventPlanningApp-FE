@@ -39,7 +39,7 @@ interface DetailCommentType {
 }
 
 interface objPostType {
-  comment: string;
+  comment?: string;
   id: number;
 }
 
