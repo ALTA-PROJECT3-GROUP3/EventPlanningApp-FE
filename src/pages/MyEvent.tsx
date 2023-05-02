@@ -24,36 +24,6 @@ const MyEvent: FC = () => {
     alterFetchData();
   }, []);
 
-  async function fetchData() {
-    await axios
-      .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=joined"
-      )
-      .then((response) => {
-        const { data } = response.data;
-        setJoinded(data);
-      })
-      .catch((error) => {
-        console.log(error);
-        alert(error.toString());
-      })
-      .finally(() => setLoading(false));
-
-    await axios
-      .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=owned"
-      )
-      .then((response) => {
-        const { data } = response.data;
-        setHosted(data);
-      })
-      .catch((error) => {
-        console.log(error);
-        alert(error.toString());
-      })
-      .finally(() => setLoading(false));
-  }
-
   async function alterFetchData() {
     try {
       const responseJoin = await axios.get(
@@ -86,12 +56,14 @@ const MyEvent: FC = () => {
           <a
             className={`${tabValue === 0 ? "tab-active" : ""} tab tab-lg`}
             onClick={() => setTabValue(0)}
+            id="button-tab-joined"
           >
             Joined Event
           </a>
           <a
             className={`${tabValue === 1 ? "tab-active" : ""} tab tab-lg`}
             onClick={() => setTabValue(1)}
+            id="button-tab-hosted"
           >
             Hosted Event
           </a>
@@ -99,6 +71,7 @@ const MyEvent: FC = () => {
             className={`${
               tabValue === 2 ? "tab-active" : ""
             } tab tab-lg tab-disabled`}
+            id="button-tab-past"
           >
             Past Event
           </a>

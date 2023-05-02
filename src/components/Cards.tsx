@@ -58,6 +58,7 @@ export const CardHome: FC<cardHomeCapType> = (props) => {
               navigate(`/event/${id}`);
             }}
             className="btn btn-primary tracking-wider text-white"
+            id={`to-${name}`}
           >
             Detail
           </button>
@@ -100,6 +101,7 @@ export const CardPay: FC<cardHomeCapType> = (props) => {
               navigate(`/event/${id}/payment`);
             }}
             className="btn btn-primary tracking-wider text-white"
+            id={`to-${name}`}
           >
             Pay
           </button>
