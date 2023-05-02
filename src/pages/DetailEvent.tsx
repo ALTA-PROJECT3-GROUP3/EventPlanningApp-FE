@@ -7,6 +7,7 @@ import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
 import { ModalPayment, InputPayment, RadioBank } from "../components/Modals";
 import withReactContent from "sweetalert2-react-content";
+import { useNavigate } from "react-router-dom";
 
 interface DetailCapType {
   name: string;
@@ -58,6 +59,7 @@ const DetailEvent: FC = () => {
   const [payIsDisabled, setpayIsDisabled] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
   const [isHosted, setIsHosted] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const [objPost, setObjPost] = useState<objPostType>({
     comment: "",
@@ -164,7 +166,11 @@ const DetailEvent: FC = () => {
           text: message,
           icon: "success",
           showCancelButton: false,
-        }).then((result) => {});
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/event/params/payment");
+          }
+        });
       })
       .catch((error) => {
         const { data } = error.response;
