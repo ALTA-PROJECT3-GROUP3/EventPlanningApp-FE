@@ -20,7 +20,7 @@ const EditEvent = () => {
             className="file-input w-[16.6rem] bg-[#224957] text-white mt-5"
           />
         </div>
-        <div className="grow h-full mt-12">
+        <div className="grow h-full w-[60%] mt-12">
           <form className="flex flex-col justify-center items-center">
             <div className="flex flex-col w-11/12 gap-5">
               <input
@@ -57,43 +57,43 @@ const EditEvent = () => {
               Add Ticket
             </h1>
             <form className="flex flex-col w-11/12 gap-2">
-              <div className="flex w-11/12 gap-2">
+              <div className="flex w-full gap-2">
                 <input
                   type="text"
                   placeholder="Regular"
-                  className="input flex-none w-[30rem] h-14 text-white bg-[#224957] font-semibold"
+                  className="input flex-none w-[40%] h-14 text-white bg-[#224957] font-semibold"
                 />
                 <input
                   type="text"
                   placeholder="Quota"
-                  className="input shrink w-36 h-14 text-white bg-[#224957] font-semibold"
+                  className="input shrink w-[20%] h-14 text-white bg-[#224957] font-semibold"
                 />
                 <input
                   type="text"
                   placeholder="Price"
-                  className="input flex-none w-[30rem] h-14 text-white bg-[#224957] font-semibold"
+                  className="input flex-none w-[35%] h-14 text-white bg-[#224957] font-semibold"
                 />
-                <button className="input flex-none w-14 h-14 tracking-wide text-white text-xl font-bold transition-colors duration-200 transform bg-[#f46953] rounded-xl shadow-xl hover:bg-red-500 focus:outline-none focus:bg-black-600">
+                <button className="input flex-none w-[5%] h-14 tracking-wide text-white text-xl font-bold transition-colors duration-200 transform bg-[#f46953] rounded-xl shadow-xl hover:bg-red-500 focus:outline-none focus:bg-black-600">
                   -
                 </button>
               </div>
-              <div className="flex w-11/12 gap-2">
+              <div className="flex w-full gap-2">
                 <input
                   type="text"
                   placeholder="VIP"
-                  className="input flex-none w-[30rem] h-14 text-white bg-[#224957] font-semibold"
+                  className="input flex-none w-[40%] h-14 text-white bg-[#224957] font-semibold"
                 />
                 <input
                   type="text"
                   placeholder="Quota"
-                  className="input shrink w-36 h-14 text-white bg-[#224957] font-semibold"
+                  className="input shrink w-[20%] h-14 text-white bg-[#224957] font-semibold"
                 />
                 <input
                   type="text"
                   placeholder="Price"
-                  className="input flex-none w-[30rem] h-14 text-white bg-[#224957] font-semibold"
+                  className="input flex-none w-[35%] h-14 text-white bg-[#224957] font-semibold"
                 />
-                <button className="input flex-none w-14 h-14 tracking-wide text-white text-xl font-bold transition-colors duration-200 transform bg-[#f46953] rounded-xl shadow-xl hover:bg-red-500 focus:outline-none focus:bg-black-600">
+                <button className="input flex-none w-[5%] h-14 tracking-wide text-white text-xl font-bold transition-colors duration-200 transform bg-[#f46953] rounded-xl shadow-xl hover:bg-red-500 focus:outline-none focus:bg-black-600">
                   -
                 </button>
               </div>
@@ -101,7 +101,7 @@ const EditEvent = () => {
                 Add Ticket
               </button>
             </form>
-            <div className="flex justify-end w-full my-12">
+            <div className="flex justify-end w-11/12 my-12">
               <div className="flex flex-row gap-4">
                 <button className="w-full px-12 py-5 tracking-wide text-white transition-colors duration-200 transform bg-red-600 rounded-xl shadow-2xl hover:bg-red-800 focus:outline-none focus:bg-black-600 text-xl">
                   Delete
