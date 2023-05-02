@@ -7,7 +7,7 @@ import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
 import { ModalPayment, InputPayment, RadioBank } from "../components/Modals";
 import withReactContent from "sweetalert2-react-content";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface DetailCapType {
   name: string;
@@ -50,17 +50,18 @@ const DetailTransaksi: FC = () => {
   const [payment, setPayment] = useState<Partial<DetailPaymentType>>({});
   const [getTicket, setGetTicket] = useState<Partial<DetailTicketType[]>>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const params = useParams();
   const navigate = useNavigate();
+  const { event_id } = params;
 
   useEffect(() => {
     fetchData();
   }, []);
 
   async function fetchData() {
-    //fetch untuk param, untuk tau id event
     await axios
       .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/2"
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
       )
       .then((response) => {
         const { data } = response.data;
@@ -78,7 +79,7 @@ const DetailTransaksi: FC = () => {
 
     await axios
       .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/1"
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/${event_id}`
       )
       .then((response) => {
         const { data } = response.data;
@@ -181,7 +182,7 @@ const DetailTransaksi: FC = () => {
               </button>
               <button
                 onClick={() => {
-                  navigate(`/event/params/payment/invoice`);
+                  navigate(`/event/${event_id}/payment/invoice`);
                 }}
                 className="btn btn-outline w-32 btn-primary tracking-wider text-white"
               >

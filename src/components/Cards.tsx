@@ -58,8 +58,52 @@ export const CardHome: FC<cardHomeCapType> = (props) => {
               navigate(`/event/${id}`);
             }}
             className="btn btn-primary tracking-wider text-white"
+            id={`to-${name}`}
           >
             Detail
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const CardPay: FC<cardHomeCapType> = (props) => {
+  const { name, date, host_name, quota, image, id } = props;
+  const navigate = useNavigate();
+  const dated = new Date(date);
+  const formattedDate = dated.toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  return (
+    <div
+      data-theme="mytheme"
+      className=" card card-side bg-[#224957] shadow-xl"
+    >
+      <figure className="w-[30%] bg-[#427385] p-2">
+        <img className="w-full h-auto" src={image} alt={`${name}'s picture`} />
+      </figure>
+      <div className="card-body p-6 w-[70%]">
+        <p className="text-[#20DF7F] font-medium tracking-wide">
+          {formattedDate}
+        </p>
+        <p className="card-title tracking-wider ">{name}</p>
+        <p>Hosted By: {host_name}</p>
+        <p className="mt-3">{quota} Attendees</p>
+
+        <div className="card-actions justify-end">
+          <button
+            onClick={() => {
+              navigate(`/event/${id}/payment`);
+            }}
+            className="btn btn-primary tracking-wider text-white"
+            id={`to-${name}`}
+          >
+            Pay
           </button>
         </div>
       </div>

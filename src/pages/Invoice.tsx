@@ -7,6 +7,7 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
+import { useParams } from "react-router-dom";
 
 interface DetailPaymentType {
   invoice_date: string;
@@ -29,16 +30,17 @@ const Invoice: FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const MySwal = withReactContent(Swal);
   const conponentPDF = useRef(null);
+  const params = useParams();
 
   useEffect(() => {
     fetchData();
   }, []);
 
   async function fetchData() {
-    //fetch untuk param, untuk tau id event username
+    const { event_id } = params;
     await axios
       .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/1"
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/${event_id}`
       )
       .then((response) => {
         const { data } = response.data;
