@@ -38,7 +38,7 @@ export interface objReservType {
   phone_number: string;
   payment_method: string;
   bank: string;
-  tickets: Array<objTicketType>;
+  tickets: Partial<objTicketType[]>;
 }
 
 export interface objTicketType {

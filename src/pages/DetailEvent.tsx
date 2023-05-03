@@ -52,7 +52,7 @@ const DetailEvent: FC = () => {
     tickets: [],
   });
 
-  const [objTickets, setObjTickets] = useState<Partial<objTicketType>>({});
+  const [objTickets, setObjTickets] = useState<Partial<objTicketType[]>>([]);
 
   useEffect(() => {
     fetchData();
@@ -63,16 +63,16 @@ const DetailEvent: FC = () => {
     setIsDisabled(!isEmpty);
   }, [objPost]);
 
-  // useEffect(() => {
-  //   const isEmpty = Object.values(objReserv).every((val) => val !== "");
-  //   setpayIsDisabled(!isEmpty);
-  // }, [objReserv]);
+  useEffect(() => {
+    const isEmpty = Object.values(objReserv).every((val) => val !== "");
+    setpayIsDisabled(!isEmpty);
+  }, [objReserv]);
 
   async function fetchData() {
     //fetch untuk param, untuk tau id event
     await axios
       .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/2"
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
       )
       .then((response) => {
         const { data } = response.data;
@@ -81,23 +81,12 @@ const DetailEvent: FC = () => {
         setParticipant(participants);
         setTicket(tickets);
         setGetComment(comments);
-
-        console.log(datas);
       })
       .catch((error) => {
         console.log(error);
         alert(error.toString());
       })
       .finally(() => setLoading(false));
-  }
-
-  function handleChange(
-    value: string | File,
-    key: keyof typeof objReserv.tickets
-  ) {
-    let temp: any = [{ ...objReserv.tickets }];
-    temp[key] = value;
-    setObjReserv(temp);
   }
 
   const toFormatedDate = (unformated: any) => {
@@ -127,7 +116,10 @@ const DetailEvent: FC = () => {
           text: message,
           icon: "success",
           showCancelButton: false,
-        }).then((result) => {});
+        }).then((result) => {
+          setObjPost({ ...objPost, comment: "" });
+          fetchData();
+        });
       })
       .catch((error) => {
         const { data } = error.response;
@@ -145,6 +137,7 @@ const DetailEvent: FC = () => {
     event.preventDefault();
     setpayIsDisabled(true);
 
+    console.log(objReserv);
     axios
       .post(
         "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/reservations",
@@ -152,7 +145,7 @@ const DetailEvent: FC = () => {
       )
       .then((response) => {
         const { data, message } = response.data;
-        console.log(objReserv);
+        // console.log(data);
         MySwal.fire({
           title: "Success",
           text: message,
@@ -160,7 +153,7 @@ const DetailEvent: FC = () => {
           showCancelButton: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/event/params/payment");
+            navigate(`/event/${event_id}/payment`);
           }
         });
       })
@@ -183,6 +176,21 @@ const DetailEvent: FC = () => {
     });
   };
 
+  function onChanged(event: any, index: any, num?: number) {
+    const newValues = [...objTickets];
+    newValues[index] = {
+      ticket_id: num,
+      quantity: Number(event.target.value),
+      ticket_name: event.target.name,
+    };
+    setObjTickets(newValues);
+    setObjReserv({
+      ...objReserv,
+      tickets: objTickets,
+    });
+    console.log(objTickets);
+  }
+
   return (
     <Layout>
       <ModalPayment>
@@ -197,22 +205,16 @@ const DetailEvent: FC = () => {
               {ticket.map((t, idx) => {
                 return (
                   <InputPayment
+                    key={idx}
                     name="Ticket Name"
+                    defaultValue={0}
                     id={`input-ticket-quota ${idx}`}
                     placeholder="jumlah tiket yang anda inginkan"
                     onChange={(event) => {
-                      setObjReserv({
-                        ...objReserv,
-                        tickets: [
-                          ...objReserv.tickets,
-                          {
-                            ticket_id: t?.ticket_id,
-                            quantity: Number(event.target.value),
-                            ticket_name: event.target.name,
-                          },
-                        ],
-                      });
-                      console.log(objReserv);
+                      onChanged(event, idx, t?.ticket_id);
+                    }}
+                    onBlur={(event) => {
+                      onChanged(event, idx, t?.ticket_id);
                     }}
                   />
                 );
@@ -398,7 +400,9 @@ const DetailEvent: FC = () => {
             <form
               data-theme="mytheme"
               className="bg-inherit flex flex-col gap-3 mt-3"
-              onSubmit={(event) => handlePost(event)}
+              onSubmit={(event) => {
+                handlePost(event);
+              }}
             >
               <textarea
                 placeholder="Comment here"
