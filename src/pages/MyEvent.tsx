@@ -21,28 +21,46 @@ const MyEvent: FC = () => {
   const [tabValue, setTabValue] = useState(1);
 
   useEffect(() => {
-    alterFetchData();
+    dedicatedFetch();
   }, []);
 
-  async function alterFetchData() {
-    try {
-      const responseJoin = await axios.get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=joined"
-      );
-      const { data: data1 } = responseJoin.data;
-      setJoinded(data1);
+  function dedicatedFetch() {
+    fetchJoin();
+    fetchHosted();
+  }
 
-      const responseHosted = await axios.get(
+  async function fetchJoin() {
+    await axios
+      .get(
+        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=joined"
+      )
+      .then((response) => {
+        const { data } = response.data;
+        setJoinded(data);
+        // console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error.toString());
+      })
+      .finally(() => setLoading(false));
+  }
+
+  async function fetchHosted() {
+    await axios
+      .get(
         "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=owned"
-      );
-      const { data: data2 } = responseHosted.data;
-      setHosted(data2);
-    } catch (error) {
-      console.error(error);
-      alert(error?.toString());
-    } finally {
-      setLoading(false);
-    }
+      )
+      .then((response) => {
+        const { data } = response.data;
+        setHosted(data);
+        // console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
+        alert(error.toString());
+      })
+      .finally(() => setLoading(false));
   }
 
   return (
