@@ -5,48 +5,22 @@ import { CardComment, CardParticipant } from "../components/Cards";
 import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
-import { ModalPayment, InputPayment, RadioBank } from "../components/Modals";
+import {
+  ModalPayment,
+  InputPayment,
+  AlterRadioBank,
+} from "../components/Modals";
 import withReactContent from "sweetalert2-react-content";
-import { useNavigate } from "react-router-dom";
-
-interface DetailCapType {
-  name: string;
-  date: string;
-  host_name: string;
-  is_paid: boolean;
-  quota: number;
-  location: string;
-  details: string;
-}
-
-interface DetailParticipantsType {
-  id: number;
-  user_name: string;
-  pictures: string;
-}
-
-interface DetailTicketType {
-  quota: number;
-  price: string;
-  ticket_name: string;
-}
-
-interface DetailCommentType {
-  comment: string;
-  id: number;
-  pictures: string;
-  user_name: string;
-}
-
-interface objPostType {
-  comment?: string;
-  id: number;
-}
-
-interface objReservType {
-  id: number;
-  phone: string;
-}
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  DetailCapType,
+  DetailCommentType,
+  DetailParticipantsType,
+  DetailTicketType,
+  objPostType,
+  objReservType,
+  objTicketType,
+} from "../utils/types/detailEventType";
 
 const DetailEvent: FC = () => {
   const MySwal = withReactContent(Swal);
@@ -56,20 +30,29 @@ const DetailEvent: FC = () => {
   const [ticket, setTicket] = useState<Partial<DetailTicketType[]>>([]);
   const [getComment, setGetComment] = useState<DetailCommentType[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [payIsDisabled, setpayIsDisabled] = useState<boolean>(true);
+  const [payIsDisabled, setpayIsDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [isHosted, setIsHosted] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  const params = useParams();
+
+  const { event_id } = params;
+
   const [objPost, setObjPost] = useState<objPostType>({
     comment: "",
-    id: 0,
+    event_id: Number(event_id),
   });
 
   const [objReserv, setObjReserv] = useState<objReservType>({
-    phone: "",
-    id: 0,
+    event_id: Number(event_id),
+    phone_number: "",
+    payment_method: "",
+    bank: "",
+    tickets: [],
   });
+
+  const [objTickets, setObjTickets] = useState<Partial<objTicketType>>({});
 
   useEffect(() => {
     fetchData();
@@ -80,10 +63,10 @@ const DetailEvent: FC = () => {
     setIsDisabled(!isEmpty);
   }, [objPost]);
 
-  useEffect(() => {
-    const isEmpty = Object.values(objReserv).every((val) => val !== "");
-    setpayIsDisabled(!isEmpty);
-  }, [objReserv]);
+  // useEffect(() => {
+  //   const isEmpty = Object.values(objReserv).every((val) => val !== "");
+  //   setpayIsDisabled(!isEmpty);
+  // }, [objReserv]);
 
   async function fetchData() {
     //fetch untuk param, untuk tau id event
@@ -106,6 +89,15 @@ const DetailEvent: FC = () => {
         alert(error.toString());
       })
       .finally(() => setLoading(false));
+  }
+
+  function handleChange(
+    value: string | File,
+    key: keyof typeof objReserv.tickets
+  ) {
+    let temp: any = [{ ...objReserv.tickets }];
+    temp[key] = value;
+    setObjReserv(temp);
   }
 
   const toFormatedDate = (unformated: any) => {
@@ -184,6 +176,13 @@ const DetailEvent: FC = () => {
       .finally(() => setpayIsDisabled(false));
   }
 
+  const radioChangeHandler = (e: any) => {
+    setObjReserv({
+      ...objReserv,
+      bank: e.target.value,
+    });
+  };
+
   return (
     <Layout>
       <ModalPayment>
@@ -200,8 +199,21 @@ const DetailEvent: FC = () => {
                   <InputPayment
                     name="Ticket Name"
                     id={`input-ticket-quota ${idx}`}
-                    defaultValue={0}
                     placeholder="jumlah tiket yang anda inginkan"
+                    onChange={(event) => {
+                      setObjReserv({
+                        ...objReserv,
+                        tickets: [
+                          ...objReserv.tickets,
+                          {
+                            ticket_id: t?.ticket_id,
+                            quantity: Number(event.target.value),
+                            ticket_name: event.target.name,
+                          },
+                        ],
+                      });
+                      console.log(objReserv);
+                    }}
                   />
                 );
               })}
@@ -211,16 +223,46 @@ const DetailEvent: FC = () => {
                 type="number"
                 placeholder="+62 ..."
                 onChange={(event) =>
-                  setObjReserv({ ...objReserv, phone: event.target.value })
+                  setObjReserv({
+                    ...objReserv,
+                    phone_number: event.target.value,
+                    payment_method: "bank_transfer",
+                  })
                 }
               />
             </div>
+
             <p className="px-4 mt-3">Metode Pembayaran</p>
             <div className="grid grid-cols-2 gap-3 px-4">
-              <RadioBank id="bca" />
-              <RadioBank id="bri" />
-              <RadioBank id="mandiri" />
-              <RadioBank id="bni" />
+              <AlterRadioBank
+                changed={radioChangeHandler}
+                id="1"
+                isSelected={objReserv.bank === "bca"}
+                label="bca"
+                value="bca"
+              />
+
+              <AlterRadioBank
+                changed={radioChangeHandler}
+                id="2"
+                isSelected={objReserv.bank === "bri"}
+                label="bri"
+                value="bri"
+              />
+              <AlterRadioBank
+                changed={radioChangeHandler}
+                id="3"
+                isSelected={objReserv.bank === "mandiri"}
+                label="mandiri"
+                value="mandiri"
+              />
+              <AlterRadioBank
+                changed={radioChangeHandler}
+                id="4"
+                isSelected={objReserv.bank === "bni"}
+                label="bni"
+                value="bni"
+              />
             </div>
             <button
               type="submit"

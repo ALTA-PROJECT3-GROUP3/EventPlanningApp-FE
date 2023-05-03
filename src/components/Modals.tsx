@@ -37,23 +37,32 @@ export const InputPayment: FC<InputHTMLAttributes<HTMLInputElement>> = (
   );
 };
 
-export const RadioBank: FC<InputHTMLAttributes<HTMLInputElement>> = (props) => {
-  const { id } = props;
+interface alterBankType {
+  changed: any;
+  id: string;
+  isSelected: boolean;
+  label: string;
+  value: string;
+}
+
+export const AlterRadioBank: FC<alterBankType> = (props) => {
+  const { changed, id, isSelected, label, value } = props;
 
   return (
     <div className="flex items-center bg-[#B0C0AD] rounded ">
       <input
-        id={`radio-${id}`}
+        id={id}
+        onChange={changed}
+        value={value}
         type="radio"
-        value=""
-        name="bordered-radio"
+        checked={isSelected}
         className="hidden peer"
       />
       <label
-        htmlFor={`radio-${id}`}
         className="font-medium uppercase cursor-pointer flex items-center p-3 w-full h-full rounded peer-checked:bg-[#788675]"
+        htmlFor={id}
       >
-        {id}
+        {label}
       </label>
     </div>
   );
