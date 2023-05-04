@@ -11,7 +11,7 @@ interface HomeCap {
   date: string;
   host_name: string;
   quota: number;
-  image: string;
+  pictures: string;
   id: number;
 }
 
@@ -27,9 +27,7 @@ const Home: FC = () => {
 
   function fetchData() {
     axios
-      .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events?p=1&rp=10"
-      )
+      .get("https://hobelcyatramandiri.my.id/events?p=1&rp=10")
       .then((response) => {
         const { data } = response.data;
         setDatas(data);
@@ -59,7 +57,7 @@ const Home: FC = () => {
                   key={data.id}
                   date={data.date}
                   host_name={data.host_name}
-                  image={data.image}
+                  image={data.pictures}
                   name={data.name}
                   quota={data.quota}
                   id={data.id}

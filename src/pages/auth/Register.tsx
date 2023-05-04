@@ -1,6 +1,8 @@
 import axios from "axios";
 import { FC, useState, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "../../utils/swal";
 
 interface ObjSubmitType {
   name: string;
@@ -11,20 +13,22 @@ interface ObjSubmitType {
 }
 
 const Register: FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [objSubmit, setObjSubmit] = useState<Partial<ObjSubmitType>>({
     image:
       "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png",
   });
   const navigate = useNavigate();
+  const MySwal = withReactContent(Swal);
 
   function handleChange(value: string | File, key: keyof typeof objSubmit) {
     let temp = { ...objSubmit };
     temp[key] = value;
     setObjSubmit(temp);
-    console.log("temp", temp);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    setLoading(true);
     event.preventDefault();
     console.log(objSubmit);
 
@@ -32,28 +36,30 @@ const Register: FC = () => {
     let key: keyof typeof objSubmit;
     for (key in objSubmit) {
       formData.append(key, objSubmit[key]);
-      console.log(key, objSubmit[key]);
+      // console.log(key, objSubmit[key]);
     }
-    console.log(formData);
 
     axios
-      .post(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/users",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
+      .post("https://hobelcyatramandiri.my.id/users", objSubmit)
       .then((response) => {
         const { message } = response.data;
-        alert("register successfully");
-        navigate("/login");
+        MySwal.fire({
+          title: "Success",
+          text: message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate("/login");
+          }
+        });
       })
       .catch((error) => {
         const { message } = error.response;
-        alert("null");
+        MySwal.fire({
+          title: "Failed",
+          text: message,
+          showCancelButton: false,
+        }).finally(() => setLoading(false));
       });
   }
 

@@ -16,7 +16,7 @@ const Login: FC = () => {
   const [disabled, setDisabled] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const MySwal = withReactContent(Swal);
-  const [, setCookie] = useCookies(["token", "uname", "name"]);
+  const [, setCookie] = useCookies(["token", "uname", "name", "id"]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -55,6 +55,7 @@ const Login: FC = () => {
             setCookie("token", data.token, { path: "/" });
             setCookie("uname", data.username, { path: "/" });
             setCookie("name", data.name, { path: "/" });
+            setCookie("id", data.id, { path: "/" });
             dispatch(handleAuth(true));
             navigate(`/u/${data.username}`);
           }
