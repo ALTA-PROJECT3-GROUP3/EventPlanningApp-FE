@@ -1,9 +1,47 @@
-import React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useCookies } from "react-cookie";
 
 import image from "/defaultImg.png";
 import Layout from "../components/Layout";
 
+interface user {
+  name: string;
+  email: string;
+  pictures: string;
+}
+
 const Profile = () => {
+  const [user, setUser] = useState<user[]>([]);
+  const [userData, setUserData] = useState<user>({
+    name: "",
+    email: "",
+    pictures: "",
+  });
+  const [cookie] = useCookies(["token", "name", "uname", "id"]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  function fetchData() {
+    axios
+      .get(`https://hobelcyatramandiri.my.id/users/${cookie.id}`, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
+      .then((response) => {
+        const { data } = response.data;
+        setUser(data);
+        setUserData(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        alert(error.toString());
+      });
+  }
+
   return (
     <Layout>
       <div className="max-h-[200vh] py-12 flex flex-col items-center w-full">
@@ -13,26 +51,14 @@ const Profile = () => {
           <img src={image} alt="img" className="h-48" />
         </figure>
         <div>
-          <p className="text-4xl font-bold text-center mt-8">
-            Yusuf Ashidicki Pradana
-          </p>
+          <p className="text-4xl font-bold text-center mt-8">{userData.name}</p>
         </div>
         <div className="overflow-x-auto ms-10 mt-6">
           <table className="table w-full font-bold text-xl">
             <tr>
               <td>Email</td>
               <td>:</td>
-              <td>ashidicki220@gmail.com</td>
-            </tr>
-            <tr>
-              <td>Password</td>
-              <td>:</td>
-              <td>***********</td>
-            </tr>
-            <tr>
-              <td>Address</td>
-              <td>:</td>
-              <td>Jln. Dr. Wahidin SDRHSD No. 08</td>
+              <td>{userData.email}</td>
             </tr>
           </table>
         </div>
