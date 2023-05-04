@@ -4,6 +4,7 @@ import axios from "axios";
 import { CardHome, CardPay } from "../components/Cards";
 import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
+import { useCookies } from "react-cookie";
 
 interface HomeCap {
   name: string;
@@ -19,6 +20,8 @@ const MyEvent: FC = () => {
   const [joinded, setJoinded] = useState<HomeCap[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [tabValue, setTabValue] = useState(1);
+  const [cookie] = useCookies(["token", "uname"]);
+  const checkToken = cookie.token;
 
   useEffect(() => {
     dedicatedFetch();
@@ -144,6 +147,7 @@ const MyEvent: FC = () => {
                       name={data.name}
                       quota={data.quota}
                       id={data.id}
+                      loggedin={checkToken}
                     />
                   );
                 })

@@ -8,6 +8,7 @@ interface cardHomeCapType {
   quota: number;
   image: string;
   id: number;
+  loggedin?: boolean;
 }
 
 interface cardParticipantCapType {
@@ -26,7 +27,7 @@ interface tabelCapType {
 }
 
 export const CardHome: FC<cardHomeCapType> = (props) => {
-  const { name, date, host_name, quota, image, id } = props;
+  const { name, date, host_name, quota, image, id, loggedin } = props;
   const navigate = useNavigate();
   const dated = new Date(date);
   const formattedDate = dated.toLocaleDateString("en-GB", {
@@ -54,9 +55,9 @@ export const CardHome: FC<cardHomeCapType> = (props) => {
 
         <div className="card-actions justify-end">
           <button
-            onClick={() => {
-              navigate(`/event/${id}`);
-            }}
+            onClick={() =>
+              loggedin ? navigate(`/event/${id}`) : navigate("/login")
+            }
             className="btn btn-primary tracking-wider text-white"
             id={`to-${name}`}
           >
