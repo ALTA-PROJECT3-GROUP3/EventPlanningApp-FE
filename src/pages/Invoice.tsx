@@ -32,7 +32,7 @@ const Invoice: FC = () => {
   const MySwal = withReactContent(Swal);
   const conponentPDF = useRef(null);
   const params = useParams();
-  const [cookie] = useCookies(["token", "uname"]);
+  const [cookie] = useCookies(["token", "uname", "name"]);
   const checkToken = cookie.token;
 
   useEffect(() => {
@@ -122,11 +122,15 @@ const Invoice: FC = () => {
                 </tr>
                 <tr className="border-slate-600 border">
                   <td className="w-[25%] p-2">Pemesan</td>
-                  <td className="">: {}</td>
+                  <td className="">: {cookie.name}</td>
                 </tr>
                 <tr className="border-slate-600 border">
                   <td className="w-[25%] p-2">Status</td>
                   <td className="">: {payment.status}</td>
+                </tr>
+                <tr className="border-slate-600 border">
+                  <td className="w-[25%] p-2">Nomor VA</td>
+                  <td className="">: {payment.va_number}</td>
                 </tr>
               </tbody>
             </table>
