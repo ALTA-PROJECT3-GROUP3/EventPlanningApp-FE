@@ -1,4 +1,7 @@
 import { FC, useState, useEffect, FormEvent, Children } from "react";
+import withReactContent from "sweetalert2-react-content";
+import { useNavigate, useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import axios from "axios";
 
 import { CardComment, CardParticipant } from "../components/Cards";
@@ -10,8 +13,6 @@ import {
   InputPayment,
   AlterRadioBank,
 } from "../components/Modals";
-import withReactContent from "sweetalert2-react-content";
-import { useNavigate, useParams } from "react-router-dom";
 import {
   DetailCapType,
   DetailCommentType,
@@ -23,28 +24,21 @@ import {
 } from "../utils/types/detailEventType";
 
 const DetailEvent: FC = () => {
-  const MySwal = withReactContent(Swal);
-
-  const [datas, setDatas] = useState<Partial<DetailCapType>>({});
   const [participant, setParticipant] = useState<DetailParticipantsType[]>([]);
+  const [objTickets, setObjTickets] = useState<Partial<objTicketType[]>>([]);
   const [ticket, setTicket] = useState<Partial<DetailTicketType[]>>([]);
   const [getComment, setGetComment] = useState<DetailCommentType[]>([]);
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [payIsDisabled, setpayIsDisabled] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [isHosted, setIsHosted] = useState<boolean>(true);
+  const [datas, setDatas] = useState<Partial<DetailCapType>>({});
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
-
   const params = useParams();
 
-  const { event_id } = params;
-
-  const [objPost, setObjPost] = useState<objPostType>({
-    comment: "",
-    event_id: Number(event_id),
-  });
-
+  const [cookie] = useCookies(["uname"]);
+  const { event_id, host } = params;
   const [objReserv, setObjReserv] = useState<objReservType>({
     event_id: Number(event_id),
     phone_number: "",
@@ -52,8 +46,10 @@ const DetailEvent: FC = () => {
     bank: "",
     tickets: [],
   });
-
-  const [objTickets, setObjTickets] = useState<Partial<objTicketType[]>>([]);
+  const [objPost, setObjPost] = useState<objPostType>({
+    comment: "",
+    event_id: Number(event_id),
+  });
 
   useEffect(() => {
     fetchData();
@@ -70,7 +66,6 @@ const DetailEvent: FC = () => {
   }, [objReserv]);
 
   async function fetchData() {
-    //fetch untuk param, untuk tau id event
     await axios
       .get(
         `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
@@ -118,7 +113,10 @@ const DetailEvent: FC = () => {
           icon: "success",
           showCancelButton: false,
         }).then((result) => {
-          setObjPost({ ...objPost, comment: "" });
+          setObjPost({
+            comment: "",
+            event_id: Number(event_id),
+          });
           fetchData();
         });
       })
@@ -137,8 +135,6 @@ const DetailEvent: FC = () => {
   function handleReservation(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setpayIsDisabled(true);
-
-    console.log(objReserv);
     axios
       .post(
         "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/reservations",
@@ -146,7 +142,6 @@ const DetailEvent: FC = () => {
       )
       .then((response) => {
         const { data, message } = response.data;
-        // console.log(data);
         MySwal.fire({
           title: "Success",
           text: message,
@@ -189,38 +184,46 @@ const DetailEvent: FC = () => {
       ...objReserv,
       tickets: objTickets,
     });
-    console.log(objTickets);
   }
 
   const handleDeleteEvent = () => {
-    axios
-      .delete(
-        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
-      )
-      .then((response) => {
-        const { message } = response.data;
-        console.log(message);
-        MySwal.fire({
-          title: "Delete Account",
-          text: "Are you sure?",
-          icon: "warning",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // removeCookie("tkn");
-            // removeCookie("uname");
-            navigate("/u/username");
-          }
-        });
-      })
-      .catch((error) => {
-        const { data } = error.response;
-        MySwal.fire({
-          title: "Failed",
-          text: data.message,
-          showCancelButton: false,
-          icon: "error",
-        });
-      });
+    MySwal.fire({
+      title: "Delete Account",
+      text: "Are you sure?",
+      icon: "warning",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .delete(
+            `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
+          )
+          .then((response) => {
+            const { message } = response.data;
+            navigate(`/u/${cookie.uname}`);
+          })
+          .catch((error) => {
+            const { data } = error.response;
+            MySwal.fire({
+              title: "Failed",
+              text: data.message,
+              showCancelButton: false,
+              icon: "error",
+            });
+          });
+      }
+    });
+  };
+
+  const handleStart = () => {
+    MySwal.fire({
+      title: "Start Event?",
+      text: "Are you sure?",
+      icon: "question",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setIsStarted(true);
+      }
+    });
   };
 
   return (
@@ -274,6 +277,7 @@ const DetailEvent: FC = () => {
                 isSelected={objReserv.bank === "bca"}
                 label="bca"
                 value="bca"
+                key="bca"
               />
 
               <AlterRadioBank
@@ -282,6 +286,7 @@ const DetailEvent: FC = () => {
                 isSelected={objReserv.bank === "bri"}
                 label="bri"
                 value="bri"
+                key="bri"
               />
               <AlterRadioBank
                 changed={radioChangeHandler}
@@ -289,6 +294,7 @@ const DetailEvent: FC = () => {
                 isSelected={objReserv.bank === "mandiri"}
                 label="mandiri"
                 value="mandiri"
+                key="mandiri"
               />
               <AlterRadioBank
                 changed={radioChangeHandler}
@@ -296,6 +302,7 @@ const DetailEvent: FC = () => {
                 isSelected={objReserv.bank === "bni"}
                 label="bni"
                 value="bni"
+                key="bni"
               />
             </div>
             <button
@@ -392,7 +399,7 @@ const DetailEvent: FC = () => {
               )}
             </div>
             {/* action button */}
-            {isHosted ? (
+            {host === "host" ? (
               <div
                 data-theme="mytheme"
                 className="bg-inherit card-actions justify-end"
@@ -408,14 +415,14 @@ const DetailEvent: FC = () => {
                 <button
                   className="btn btn-primary w-32 tracking-wider text-white"
                   onClick={() => {
-                    navigate(`/u/:username/${event_id}/edit`);
+                    navigate(`/u/${cookie.uname}/${event_id}/edit`);
                   }}
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => {
-                    setIsStarted(true);
+                    handleStart();
                   }}
                   disabled={isStarted}
                   className="btn btn-primary w-32 tracking-wider text-white"
@@ -455,6 +462,7 @@ const DetailEvent: FC = () => {
               <textarea
                 placeholder="Comment here"
                 className="textarea textarea-bordered bg-inherit w-full "
+                value={objPost.comment}
                 onChange={(event) =>
                   setObjPost({ ...objPost, comment: event.target.value })
                 }
