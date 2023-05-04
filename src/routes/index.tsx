@@ -1,5 +1,10 @@
 import { FC } from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 import NotFound from "../pages/NotFound";
 import Home from "../pages";
@@ -14,6 +19,9 @@ import DetailTransaksi from "../pages/DetailTransaksi";
 import Invoice from "../pages/Invoice";
 
 const Router: FC = () => {
+  const [cookie] = useCookies(["token", "uname"]);
+  const checkToken = cookie.token;
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -21,11 +29,11 @@ const Router: FC = () => {
     },
     {
       path: "/login",
-      element: <Login />,
+      element: checkToken ? <Navigate to="/" /> : <Login />,
     },
     {
       path: "/register",
-      element: <Register />,
+      element: checkToken ? <Navigate to="/" /> : <Register />,
     },
     {
       path: "/u/:username/",
