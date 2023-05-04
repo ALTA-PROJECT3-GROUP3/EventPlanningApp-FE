@@ -37,7 +37,7 @@ const DetailEvent: FC = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const [cookie] = useCookies(["uname"]);
+  const [cookie] = useCookies(["token", "uname"]);
   const { event_id, host } = params;
   const [objReserv, setObjReserv] = useState<objReservType>({
     event_id: Number(event_id),
@@ -68,7 +68,12 @@ const DetailEvent: FC = () => {
   async function fetchData() {
     await axios
       .get(
-        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data } = response.data;
@@ -102,7 +107,12 @@ const DetailEvent: FC = () => {
     axios
       .post(
         "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/comments",
-        objPost
+        objPost,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data, message } = response.data;
@@ -138,7 +148,12 @@ const DetailEvent: FC = () => {
     axios
       .post(
         "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/reservations",
-        objReserv
+        objReserv,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data, message } = response.data;
@@ -195,7 +210,12 @@ const DetailEvent: FC = () => {
       if (result.isConfirmed) {
         axios
           .delete(
-            `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
+            `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${cookie.token}`,
+              },
+            }
           )
           .then((response) => {
             const { message } = response.data;

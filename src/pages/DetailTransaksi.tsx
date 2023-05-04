@@ -6,7 +6,8 @@ import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
 import withReactContent from "sweetalert2-react-content";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 interface DetailCapType {
   name: string;
@@ -51,6 +52,8 @@ const DetailTransaksi: FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const params = useParams();
   const navigate = useNavigate();
+  const [cookie] = useCookies(["token", "uname", "name"]);
+
   const { event_id } = params;
 
   useEffect(() => {
@@ -60,7 +63,12 @@ const DetailTransaksi: FC = () => {
   async function fetchData() {
     await axios
       .get(
-        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data } = response.data;
@@ -78,7 +86,12 @@ const DetailTransaksi: FC = () => {
 
     await axios
       .get(
-        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/${event_id}`
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/${event_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data } = response.data;
@@ -176,9 +189,14 @@ const DetailTransaksi: FC = () => {
               data-theme="mytheme"
               className="bg-inherit card-actions justify-end"
             >
-              <button className="btn btn-primary w-32 tracking-wider text-white">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://simulator.sandbox.midtrans.com/bca/va/index"
+                className="btn btn-primary w-32 tracking-wider text-white"
+              >
                 Bayar
-              </button>
+              </a>
               <button
                 onClick={() => {
                   navigate(`/event/${event_id}/payment/invoice`);
@@ -198,8 +216,9 @@ const DetailTransaksi: FC = () => {
           </p>
           <TabelTransaksi name="Tanggal" data={payment.invoice_date} />
           <TabelTransaksi name="Event" data={payment.event_name} />
-          <TabelTransaksi name="Pemesan" data={""} />
+          <TabelTransaksi name="Pemesan" data={cookie.name} />
           <TabelTransaksi name="Status" data={payment.status} />
+          <TabelTransaksi name="Nomor VA" data={payment.va_number} />
           <p className="font-['Lexend_Deca'] text-lg text-white">Tiket</p>
           {getTicket.map((t, idx) => {
             return (

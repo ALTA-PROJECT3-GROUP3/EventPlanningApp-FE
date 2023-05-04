@@ -8,6 +8,7 @@ import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
 import { useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 interface DetailPaymentType {
   invoice_date: string;
@@ -31,6 +32,8 @@ const Invoice: FC = () => {
   const MySwal = withReactContent(Swal);
   const conponentPDF = useRef(null);
   const params = useParams();
+  const [cookie] = useCookies(["token", "uname", "name"]);
+  const checkToken = cookie.token;
 
   useEffect(() => {
     fetchData();
@@ -40,7 +43,12 @@ const Invoice: FC = () => {
     const { event_id } = params;
     await axios
       .get(
-        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/${event_id}`
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/${event_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data } = response.data;
@@ -114,11 +122,15 @@ const Invoice: FC = () => {
                 </tr>
                 <tr className="border-slate-600 border">
                   <td className="w-[25%] p-2">Pemesan</td>
-                  <td className="">: {}</td>
+                  <td className="">: {cookie.name}</td>
                 </tr>
                 <tr className="border-slate-600 border">
                   <td className="w-[25%] p-2">Status</td>
                   <td className="">: {payment.status}</td>
+                </tr>
+                <tr className="border-slate-600 border">
+                  <td className="w-[25%] p-2">Nomor VA</td>
+                  <td className="">: {payment.va_number}</td>
                 </tr>
               </tbody>
             </table>
