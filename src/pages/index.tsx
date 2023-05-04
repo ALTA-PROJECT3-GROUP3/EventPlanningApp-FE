@@ -4,6 +4,7 @@ import axios from "axios";
 import { CardHome } from "../components/Cards";
 import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
+import { useCookies } from "react-cookie";
 
 interface HomeCap {
   name: string;
@@ -17,6 +18,8 @@ interface HomeCap {
 const Home: FC = () => {
   const [datas, setDatas] = useState<HomeCap[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [cookie] = useCookies(["token", "uname"]);
+  const checkToken = cookie.token;
 
   useEffect(() => {
     fetchData();
@@ -60,6 +63,7 @@ const Home: FC = () => {
                   name={data.name}
                   quota={data.quota}
                   id={data.id}
+                  loggedin={checkToken}
                 />
               );
             })
