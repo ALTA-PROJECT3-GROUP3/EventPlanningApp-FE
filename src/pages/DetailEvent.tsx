@@ -32,7 +32,8 @@ const DetailEvent: FC = () => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [payIsDisabled, setpayIsDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isHosted, setIsHosted] = useState<boolean>(false);
+  const [isHosted, setIsHosted] = useState<boolean>(true);
+  const [isStarted, setIsStarted] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const params = useParams();
@@ -190,6 +191,37 @@ const DetailEvent: FC = () => {
     });
     console.log(objTickets);
   }
+
+  const handleDeleteEvent = () => {
+    axios
+      .delete(
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
+      )
+      .then((response) => {
+        const { message } = response.data;
+        console.log(message);
+        MySwal.fire({
+          title: "Delete Account",
+          text: "Are you sure?",
+          icon: "warning",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // removeCookie("tkn");
+            // removeCookie("uname");
+            navigate("/u/username");
+          }
+        });
+      })
+      .catch((error) => {
+        const { data } = error.response;
+        MySwal.fire({
+          title: "Failed",
+          text: data.message,
+          showCancelButton: false,
+          icon: "error",
+        });
+      });
+  };
 
   return (
     <Layout>
@@ -365,13 +397,29 @@ const DetailEvent: FC = () => {
                 data-theme="mytheme"
                 className="bg-inherit card-actions justify-end"
               >
-                <button className="btn btn-outline w-32 btn-primary tracking-wider text-white">
+                <button
+                  className="btn btn-outline w-32 btn-primary tracking-wider text-white"
+                  onClick={() => {
+                    handleDeleteEvent();
+                  }}
+                >
                   Delete
                 </button>
-                <button className="btn btn-primary w-32 tracking-wider text-white">
+                <button
+                  className="btn btn-primary w-32 tracking-wider text-white"
+                  onClick={() => {
+                    navigate(`/u/:username/${event_id}/edit`);
+                  }}
+                >
                   Edit
                 </button>
-                <button className="btn btn-primary w-32 tracking-wider text-white">
+                <button
+                  onClick={() => {
+                    setIsStarted(true);
+                  }}
+                  disabled={isStarted}
+                  className="btn btn-primary w-32 tracking-wider text-white"
+                >
                   Start
                 </button>
               </div>
