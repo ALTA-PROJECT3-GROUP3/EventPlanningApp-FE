@@ -10,9 +10,9 @@ import useTitle from "../utils/hooks/useTitle";
 interface HomeCap {
   name: string;
   date: string;
-  hosted_name: string;
+  host_name: string;
   quota: number;
-  image: string;
+  pictures: string;
   id: number;
 }
 
@@ -37,14 +37,11 @@ const MyEvent: FC = () => {
 
   async function fetchJoin() {
     await axios
-      .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=joined",
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        }
-      )
+      .get("https://hobelcyatramandiri.my.id/myevent?p=1&rp=10&type=joined", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setJoinded(data);
@@ -59,14 +56,11 @@ const MyEvent: FC = () => {
 
   async function fetchHosted() {
     await axios
-      .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=owned",
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        }
-      )
+      .get("https://hobelcyatramandiri.my.id/myevent?p=1&rp=10&type=owned", {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data } = response.data;
         setHosted(data);
@@ -129,8 +123,8 @@ const MyEvent: FC = () => {
                     <CardPay
                       key={data.id}
                       date={data.date}
-                      host_name={data.hosted_name}
-                      image={data.image}
+                      host_name={data.host_name}
+                      image={data.pictures}
                       name={data.name}
                       quota={data.quota}
                       id={data.id}
@@ -155,8 +149,8 @@ const MyEvent: FC = () => {
                     <CardHome
                       key={data.id}
                       date={data.date}
-                      host_name={data.hosted_name}
-                      image={data.image}
+                      host_name={data.host_name}
+                      image={data.pictures}
                       name={data.name}
                       quota={data.quota}
                       id={data.id}
