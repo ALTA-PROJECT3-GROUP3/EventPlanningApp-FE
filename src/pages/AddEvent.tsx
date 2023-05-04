@@ -16,7 +16,7 @@ interface EventType {
   location: string;
   is_paid: boolean;
   pictures: any;
-  quota: string;
+  attendes_quota: string;
 }
 
 const AddEvent: FC = () => {
@@ -87,7 +87,7 @@ const AddEvent: FC = () => {
       </h1>
 
       <div className="mb-12 flex border-4 border-[#427385] rounded-xl w-4/5 h-full">
-        <div className="flex-none bg-slate-500  w-64 h-64 ms-12 mt-12">
+        <div className="flex-none bg-[#427385] w-64 h-64 ms-12 mt-12">
           <figure>
             <img src={pictures} alt={pictures} className="w-64 h-64" />
           </figure>
@@ -139,7 +139,7 @@ const AddEvent: FC = () => {
                 type="text"
                 placeholder="Attandees Quota"
                 className="input w-full text-white bg-[#224957] font-semibold"
-                onChange={(e) => handleChange(e.target.value, "quota")}
+                onChange={(e) => handleChange(e.target.value, "attendes_quota")}
               />
               <textarea
                 placeholder="Description"

@@ -105,15 +105,11 @@ const DetailEvent: FC = () => {
     event.preventDefault();
     setIsDisabled(true);
     axios
-      .post(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/comments",
-        objPost,
-        {
-          headers: {
-            Authorization: `Bearer ${cookie.token}`,
-          },
-        }
-      )
+      .post("https://hobelcyatramandiri.my.id/comments", objPost, {
+        headers: {
+          Authorization: `Bearer ${cookie.token}`,
+        },
+      })
       .then((response) => {
         const { data, message } = response.data;
         console.log(objPost);
@@ -203,20 +199,17 @@ const DetailEvent: FC = () => {
 
   const handleDeleteEvent = () => {
     MySwal.fire({
-      title: "Delete Account",
+      title: "Delete Event",
       text: "Are you sure?",
       icon: "warning",
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(
-            `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${cookie.token}`,
-              },
-            }
-          )
+          .delete(`https://hobelcyatramandiri.my.id/events/${event_id}`, {
+            headers: {
+              Authorization: `Bearer ${cookie.token}`,
+            },
+          })
           .then((response) => {
             const { message } = response.data;
             navigate(`/u/${cookie.uname}`);
