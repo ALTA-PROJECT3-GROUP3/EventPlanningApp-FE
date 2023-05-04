@@ -5,48 +5,22 @@ import { CardComment, CardParticipant } from "../components/Cards";
 import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
-import { ModalPayment, InputPayment, RadioBank } from "../components/Modals";
+import {
+  ModalPayment,
+  InputPayment,
+  AlterRadioBank,
+} from "../components/Modals";
 import withReactContent from "sweetalert2-react-content";
-import { useNavigate } from "react-router-dom";
-
-interface DetailCapType {
-  name: string;
-  date: string;
-  host_name: string;
-  is_paid: boolean;
-  quota: number;
-  location: string;
-  details: string;
-}
-
-interface DetailParticipantsType {
-  id: number;
-  user_name: string;
-  pictures: string;
-}
-
-interface DetailTicketType {
-  quota: number;
-  price: string;
-  ticket_name: string;
-}
-
-interface DetailCommentType {
-  comment: string;
-  id: number;
-  pictures: string;
-  user_name: string;
-}
-
-interface objPostType {
-  comment?: string;
-  id: number;
-}
-
-interface objReservType {
-  id: number;
-  phone: string;
-}
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  DetailCapType,
+  DetailCommentType,
+  DetailParticipantsType,
+  DetailTicketType,
+  objPostType,
+  objReservType,
+  objTicketType,
+} from "../utils/types/detailEventType";
 
 const DetailEvent: FC = () => {
   const MySwal = withReactContent(Swal);
@@ -56,20 +30,30 @@ const DetailEvent: FC = () => {
   const [ticket, setTicket] = useState<Partial<DetailTicketType[]>>([]);
   const [getComment, setGetComment] = useState<DetailCommentType[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [payIsDisabled, setpayIsDisabled] = useState<boolean>(true);
+  const [payIsDisabled, setpayIsDisabled] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isHosted, setIsHosted] = useState<boolean>(false);
+  const [isHosted, setIsHosted] = useState<boolean>(true);
+  const [isStarted, setIsStarted] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const params = useParams();
+
+  const { event_id } = params;
 
   const [objPost, setObjPost] = useState<objPostType>({
     comment: "",
-    id: 0,
+    event_id: Number(event_id),
   });
 
   const [objReserv, setObjReserv] = useState<objReservType>({
-    phone: "",
-    id: 0,
+    event_id: Number(event_id),
+    phone_number: "",
+    payment_method: "",
+    bank: "",
+    tickets: [],
   });
+
+  const [objTickets, setObjTickets] = useState<Partial<objTicketType[]>>([]);
 
   useEffect(() => {
     fetchData();
@@ -89,7 +73,7 @@ const DetailEvent: FC = () => {
     //fetch untuk param, untuk tau id event
     await axios
       .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/2"
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
       )
       .then((response) => {
         const { data } = response.data;
@@ -98,8 +82,6 @@ const DetailEvent: FC = () => {
         setParticipant(participants);
         setTicket(tickets);
         setGetComment(comments);
-
-        console.log(datas);
       })
       .catch((error) => {
         console.log(error);
@@ -135,7 +117,10 @@ const DetailEvent: FC = () => {
           text: message,
           icon: "success",
           showCancelButton: false,
-        }).then((result) => {});
+        }).then((result) => {
+          setObjPost({ ...objPost, comment: "" });
+          fetchData();
+        });
       })
       .catch((error) => {
         const { data } = error.response;
@@ -153,6 +138,7 @@ const DetailEvent: FC = () => {
     event.preventDefault();
     setpayIsDisabled(true);
 
+    console.log(objReserv);
     axios
       .post(
         "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/reservations",
@@ -160,7 +146,7 @@ const DetailEvent: FC = () => {
       )
       .then((response) => {
         const { data, message } = response.data;
-        console.log(objReserv);
+        // console.log(data);
         MySwal.fire({
           title: "Success",
           text: message,
@@ -168,7 +154,7 @@ const DetailEvent: FC = () => {
           showCancelButton: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            navigate("/event/params/payment");
+            navigate(`/event/${event_id}/payment`);
           }
         });
       })
@@ -184,6 +170,59 @@ const DetailEvent: FC = () => {
       .finally(() => setpayIsDisabled(false));
   }
 
+  const radioChangeHandler = (e: any) => {
+    setObjReserv({
+      ...objReserv,
+      bank: e.target.value,
+    });
+  };
+
+  function onChanged(event: any, index: any, num?: number) {
+    const newValues = [...objTickets];
+    newValues[index] = {
+      ticket_id: num,
+      quantity: Number(event.target.value),
+      ticket_name: event.target.name,
+    };
+    setObjTickets(newValues);
+    setObjReserv({
+      ...objReserv,
+      tickets: objTickets,
+    });
+    console.log(objTickets);
+  }
+
+  const handleDeleteEvent = () => {
+    axios
+      .delete(
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
+      )
+      .then((response) => {
+        const { message } = response.data;
+        console.log(message);
+        MySwal.fire({
+          title: "Delete Account",
+          text: "Are you sure?",
+          icon: "warning",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // removeCookie("tkn");
+            // removeCookie("uname");
+            navigate("/u/username");
+          }
+        });
+      })
+      .catch((error) => {
+        const { data } = error.response;
+        MySwal.fire({
+          title: "Failed",
+          text: data.message,
+          showCancelButton: false,
+          icon: "error",
+        });
+      });
+  };
+
   return (
     <Layout>
       <ModalPayment>
@@ -198,10 +237,17 @@ const DetailEvent: FC = () => {
               {ticket.map((t, idx) => {
                 return (
                   <InputPayment
+                    key={idx}
                     name="Ticket Name"
-                    id={`input-ticket-quota ${idx}`}
                     defaultValue={0}
+                    id={`input-ticket-quota ${idx}`}
                     placeholder="jumlah tiket yang anda inginkan"
+                    onChange={(event) => {
+                      onChanged(event, idx, t?.ticket_id);
+                    }}
+                    onBlur={(event) => {
+                      onChanged(event, idx, t?.ticket_id);
+                    }}
                   />
                 );
               })}
@@ -211,16 +257,46 @@ const DetailEvent: FC = () => {
                 type="number"
                 placeholder="+62 ..."
                 onChange={(event) =>
-                  setObjReserv({ ...objReserv, phone: event.target.value })
+                  setObjReserv({
+                    ...objReserv,
+                    phone_number: event.target.value,
+                    payment_method: "bank_transfer",
+                  })
                 }
               />
             </div>
+
             <p className="px-4 mt-3">Metode Pembayaran</p>
             <div className="grid grid-cols-2 gap-3 px-4">
-              <RadioBank id="bca" />
-              <RadioBank id="bri" />
-              <RadioBank id="mandiri" />
-              <RadioBank id="bni" />
+              <AlterRadioBank
+                changed={radioChangeHandler}
+                id="1"
+                isSelected={objReserv.bank === "bca"}
+                label="bca"
+                value="bca"
+              />
+
+              <AlterRadioBank
+                changed={radioChangeHandler}
+                id="2"
+                isSelected={objReserv.bank === "bri"}
+                label="bri"
+                value="bri"
+              />
+              <AlterRadioBank
+                changed={radioChangeHandler}
+                id="3"
+                isSelected={objReserv.bank === "mandiri"}
+                label="mandiri"
+                value="mandiri"
+              />
+              <AlterRadioBank
+                changed={radioChangeHandler}
+                id="4"
+                isSelected={objReserv.bank === "bni"}
+                label="bni"
+                value="bni"
+              />
             </div>
             <button
               type="submit"
@@ -321,13 +397,29 @@ const DetailEvent: FC = () => {
                 data-theme="mytheme"
                 className="bg-inherit card-actions justify-end"
               >
-                <button className="btn btn-outline w-32 btn-primary tracking-wider text-white">
+                <button
+                  className="btn btn-outline w-32 btn-primary tracking-wider text-white"
+                  onClick={() => {
+                    handleDeleteEvent();
+                  }}
+                >
                   Delete
                 </button>
-                <button className="btn btn-primary w-32 tracking-wider text-white">
+                <button
+                  className="btn btn-primary w-32 tracking-wider text-white"
+                  onClick={() => {
+                    navigate(`/u/:username/${event_id}/edit`);
+                  }}
+                >
                   Edit
                 </button>
-                <button className="btn btn-primary w-32 tracking-wider text-white">
+                <button
+                  onClick={() => {
+                    setIsStarted(true);
+                  }}
+                  disabled={isStarted}
+                  className="btn btn-primary w-32 tracking-wider text-white"
+                >
                   Start
                 </button>
               </div>
@@ -356,7 +448,9 @@ const DetailEvent: FC = () => {
             <form
               data-theme="mytheme"
               className="bg-inherit flex flex-col gap-3 mt-3"
-              onSubmit={(event) => handlePost(event)}
+              onSubmit={(event) => {
+                handlePost(event);
+              }}
             >
               <textarea
                 placeholder="Comment here"

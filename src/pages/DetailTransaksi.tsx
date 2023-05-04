@@ -5,7 +5,6 @@ import { TabelTransaksi } from "../components/Cards";
 import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
-import { ModalPayment, InputPayment, RadioBank } from "../components/Modals";
 import withReactContent from "sweetalert2-react-content";
 import { useNavigate, useParams } from "react-router-dom";
 
