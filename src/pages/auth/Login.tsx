@@ -16,7 +16,7 @@ const Login: FC = () => {
   const [disabled, setDisabled] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const MySwal = withReactContent(Swal);
-  const [, setCookie] = useCookies(["token", "uname"]);
+  const [, setCookie] = useCookies(["token", "uname", "name"]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -40,13 +40,10 @@ const Login: FC = () => {
     setLoading(true);
     e.preventDefault();
     axios
-      .post(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/login",
-        {
-          username,
-          password,
-        }
-      )
+      .post("https://hobelcyatramandiri.my.id/login", {
+        username,
+        password,
+      })
       .then((response) => {
         const { data } = response.data;
         MySwal.fire({
@@ -57,6 +54,7 @@ const Login: FC = () => {
           if (result.isConfirmed) {
             setCookie("token", data.token, { path: "/" });
             setCookie("uname", data.username, { path: "/" });
+            setCookie("name", data.name, { path: "/" });
             dispatch(handleAuth(true));
             navigate(`/u/${data.username}`);
           }
@@ -68,7 +66,7 @@ const Login: FC = () => {
           title: "Failed",
           text: data.message,
           showCancelButton: false,
-        });
+        }).finally(() => setLoading(false));
       });
   };
 

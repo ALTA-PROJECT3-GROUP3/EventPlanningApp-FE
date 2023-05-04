@@ -63,6 +63,7 @@ const Home: FC = () => {
                   name={data.name}
                   quota={data.quota}
                   id={data.id}
+                  isHosted=""
                   loggedin={checkToken}
                 />
               );

@@ -15,7 +15,7 @@ import { handleAuth } from "../utils/redux/reducers/reducer";
 import Swal from "../utils/swal";
 
 const Navbar: FC = () => {
-  const [cookie, , removeCookie] = useCookies(["token", "uname"]);
+  const [cookie, , removeCookie] = useCookies(["token", "uname", "name"]);
   const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -30,6 +30,8 @@ const Navbar: FC = () => {
       if (result.isConfirmed) {
         removeCookie("token");
         removeCookie("uname");
+        removeCookie("name");
+
         dispatch(handleAuth(false));
         navigate("/");
       }

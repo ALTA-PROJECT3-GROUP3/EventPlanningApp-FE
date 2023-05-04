@@ -5,11 +5,12 @@ import { CardHome, CardPay } from "../components/Cards";
 import Layout from "../components/Layout";
 import { Spinner } from "../components/Loading";
 import { useCookies } from "react-cookie";
+import useTitle from "../utils/hooks/useTitle";
 
 interface HomeCap {
   name: string;
   date: string;
-  host_name: string;
+  hosted_name: string;
   quota: number;
   image: string;
   id: number;
@@ -22,6 +23,8 @@ const MyEvent: FC = () => {
   const [tabValue, setTabValue] = useState(1);
   const [cookie] = useCookies(["token", "uname"]);
   const checkToken = cookie.token;
+
+  useTitle("My Event");
 
   useEffect(() => {
     dedicatedFetch();
@@ -116,7 +119,7 @@ const MyEvent: FC = () => {
                     <CardPay
                       key={data.id}
                       date={data.date}
-                      host_name={data.host_name}
+                      host_name={data.hosted_name}
                       image={data.image}
                       name={data.name}
                       quota={data.quota}
@@ -142,11 +145,12 @@ const MyEvent: FC = () => {
                     <CardHome
                       key={data.id}
                       date={data.date}
-                      host_name={data.host_name}
+                      host_name={data.hosted_name}
                       image={data.image}
                       name={data.name}
                       quota={data.quota}
                       id={data.id}
+                      isHosted="/host"
                       loggedin={checkToken}
                     />
                   );

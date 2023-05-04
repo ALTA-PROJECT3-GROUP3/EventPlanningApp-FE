@@ -52,7 +52,11 @@ const Router: FC = () => {
       element: <EditEvent />,
     },
     {
-      path: "/event/:event_id",
+      path: "/event/:event_id/",
+      element: <DetailEvent />,
+    },
+    {
+      path: "/event/:event_id/:host",
       element: <DetailEvent />,
     },
     {
