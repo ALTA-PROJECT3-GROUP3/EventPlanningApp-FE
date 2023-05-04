@@ -1,13 +1,32 @@
-import { FC } from "react";
+import { FC, useState, useEffect } from "react";
+import withReactContent from "sweetalert2-react-content";
+
 import axios from "axios";
-import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
+
+import { handleAuth } from "../../utils/redux/reducers/reducer";
+import Swal from "../../utils/swal";
 
 const Login: FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [disabled, setDisabled] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
+  const MySwal = withReactContent(Swal);
+  const [, setCookie] = useCookies(["token", "uname"]);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (username && password) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [username, password]);
 
   const handleUsernameChange = (e: React.FormEvent<HTMLInputElement>) => {
     setUsername(e.currentTarget.value);
@@ -17,7 +36,8 @@ const Login: FC = () => {
     setPassword(e.currentTarget.value);
   };
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     e.preventDefault();
     axios
       .post(
@@ -28,16 +48,27 @@ const Login: FC = () => {
         }
       )
       .then((response) => {
-        const data = response.data;
-        // Cookies.set("userData", JSON.stringify(data));
-        // const userData = Cookies.get("userData");
-        console.log(data);
-        // console.log(userData);
-
-        navigate("/u/:username/");
+        const { data } = response.data;
+        MySwal.fire({
+          title: "Success",
+          text: data.message,
+          showCancelButton: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCookie("token", data.token, { path: "/" });
+            setCookie("uname", data.username, { path: "/" });
+            dispatch(handleAuth(true));
+            navigate(`/u/${data.username}`);
+          }
+        });
       })
       .catch((error) => {
-        console.log(error);
+        const { data } = error.response;
+        MySwal.fire({
+          title: "Failed",
+          text: data.message,
+          showCancelButton: false,
+        });
       });
   };
 
@@ -77,6 +108,7 @@ const Login: FC = () => {
               <button
                 type="submit"
                 className="w-full py-3 mt-20 tracking-wide text-white transition-colors duration-200 transform bg-green-600 rounded-xl shadow-xl hover:bg-green-800 focus:outline-none focus:bg-black-600"
+                disabled={loading || disabled}
               >
                 Sign In
               </button>

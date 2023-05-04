@@ -4,12 +4,37 @@ import {
   FaSignOutAlt,
   FaCalendarPlus,
 } from "react-icons/fa";
-import { FC } from "react";
-import logos from "/NavLog.png";
+import { FC, Fragment, useContext } from "react";
+import withReactContent from "sweetalert2-react-content";
+import { useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 
+import logos from "/NavLog.png";
+import { handleAuth } from "../utils/redux/reducers/reducer";
+import Swal from "../utils/swal";
+
 const Navbar: FC = () => {
+  const [cookie, , removeCookie] = useCookies(["token", "uname"]);
+  const MySwal = withReactContent(Swal);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const checkToken = cookie.token;
+  const getUname = cookie.uname;
+
+  const handleLogout = async () => {
+    MySwal.fire({
+      title: "Logout",
+      text: "Are you sure?",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeCookie("token");
+        removeCookie("uname");
+        dispatch(handleAuth(false));
+        navigate("/");
+      }
+    });
+  };
 
   return (
     <div className="navbar bg-[#0A142F] px-32 sticky top-0 text-gray-300 z-50">
@@ -24,15 +49,19 @@ const Navbar: FC = () => {
       </div>
       <div data-theme="mytheme" className="flex-none bg-inherit">
         <ul className="menu menu-horizontal px-1 ">
-          <li>
-            <NavLink
-              id="to-dashboard"
-              to={`/u/username`}
-              className=" text-slate-300 bg-inherit hover:bg-primary "
-            >
-              Dashboard
-            </NavLink>
-          </li>
+          {checkToken ? (
+            <li>
+              <NavLink
+                id="to-dashboard"
+                to={`/u/${getUname}`}
+                className=" text-slate-300 bg-inherit hover:bg-primary "
+              >
+                Dashboard
+              </NavLink>
+            </li>
+          ) : (
+            <></>
+          )}
           <li tabIndex={0} className="dropdown dropdown-end">
             <a className="active:bg-[#080f25] hover:bg-inherit">
               <svg
@@ -49,45 +78,49 @@ const Navbar: FC = () => {
               tabIndex={0}
               className="dropdown-content text-gray-800 menu p-2 shadow bg-gray-100 rounded-box w-52 "
             >
-              <li>
-                <NavLink
-                  id="to-add-event"
-                  to={`/u/username/add_event`}
-                  className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
-                >
-                  <FaCalendarPlus className="h-5 w-5" />
-                  Add Event
-                </NavLink>
-              </li>
-              <div className="my-2" />
-              <li>
-                <NavLink
-                  id="to-profile"
-                  to={`/u/username/profile`}
-                  className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
-                >
-                  <FaUserCircle className="h-5 w-5" />
-                  View Profile
-                </NavLink>
-              </li>
+              {checkToken ? (
+                <>
+                  <li>
+                    <NavLink
+                      id="to-add-event"
+                      to={`/u/${getUname}/add_event`}
+                      className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
+                    >
+                      <FaCalendarPlus className="h-5 w-5" />
+                      Add Event
+                    </NavLink>
+                  </li>
+                  <div className="my-2" />
+                  <li>
+                    <NavLink
+                      id="to-profile"
+                      to={`/u/${getUname}/profile`}
+                      className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
+                    >
+                      <FaUserCircle className="h-5 w-5" />
+                      View Profile
+                    </NavLink>
+                  </li>
+                </>
+              ) : (
+                <></>
+              )}
+
               <li>
                 <a
                   id="btn-logout"
                   className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
+                  onClick={() =>
+                    checkToken ? handleLogout() : navigate("/login")
+                  }
                 >
-                  <FaSignOutAlt className="h-5 w-5" />
-                  Log Out
+                  {checkToken ? (
+                    <FaSignOutAlt className="h-5 mr-2 w-5" aria-hidden="true" />
+                  ) : (
+                    <FaSignInAlt className="h-5 mr-2 w-5" aria-hidden="true" />
+                  )}
+                  {checkToken ? "Logout" : "Login"}
                 </a>
-              </li>
-              <li>
-                <NavLink
-                  to="/login"
-                  id="btn-login"
-                  className="hover:bg-gray-300 active:bg-gray-400 active:text-gray-800"
-                >
-                  <FaSignInAlt className="h-5 w-5" />
-                  Log In
-                </NavLink>
               </li>
             </ul>
           </li>
