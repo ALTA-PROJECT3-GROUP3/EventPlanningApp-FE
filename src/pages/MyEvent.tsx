@@ -11,7 +11,7 @@ interface HomeCap {
   name: string;
   date: string;
   host_name: string;
-  quota: number;
+  attendes_quota: number;
   pictures: string;
   id: number;
 }
@@ -126,7 +126,7 @@ const MyEvent: FC = () => {
                       host_name={data.host_name}
                       image={data.pictures}
                       name={data.name}
-                      quota={data.quota}
+                      quota={data.attendes_quota}
                       id={data.id}
                     />
                   );
@@ -152,7 +152,7 @@ const MyEvent: FC = () => {
                       host_name={data.host_name}
                       image={data.pictures}
                       name={data.name}
-                      quota={data.quota}
+                      quota={data.attendes_quota}
                       id={data.id}
                       isHosted="/host"
                       loggedin={checkToken}
