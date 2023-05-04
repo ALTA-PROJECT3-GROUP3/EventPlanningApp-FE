@@ -34,7 +34,7 @@ const Login: FC = () => {
         console.log(data);
         // console.log(userData);
 
-        // navigate("/");
+        navigate("/u/:username/");
       })
       .catch((error) => {
         console.log(error);
@@ -85,7 +85,7 @@ const Login: FC = () => {
                 {
                   <Link
                     className="text-[#20df7f] text-md font-semibold"
-                    to={"/u/:username/"}
+                    to={"/register"}
                   >
                     Sign up
                   </Link>
