@@ -38,7 +38,12 @@ const MyEvent: FC = () => {
   async function fetchJoin() {
     await axios
       .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=joined"
+        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=joined",
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data } = response.data;
@@ -55,7 +60,12 @@ const MyEvent: FC = () => {
   async function fetchHosted() {
     await axios
       .get(
-        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=owned"
+        "https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/myevent?p=1&rp=10&type=owned",
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data } = response.data;

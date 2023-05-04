@@ -7,6 +7,7 @@ import { Spinner } from "../components/Loading";
 import Swal from "../utils/swal";
 import withReactContent from "sweetalert2-react-content";
 import { useNavigate, useParams } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 interface DetailCapType {
   name: string;
@@ -51,6 +52,8 @@ const DetailTransaksi: FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const params = useParams();
   const navigate = useNavigate();
+  const [cookie] = useCookies(["token", "uname"]);
+
   const { event_id } = params;
 
   useEffect(() => {
@@ -60,7 +63,12 @@ const DetailTransaksi: FC = () => {
   async function fetchData() {
     await axios
       .get(
-        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/events/${event_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data } = response.data;
@@ -78,7 +86,12 @@ const DetailTransaksi: FC = () => {
 
     await axios
       .get(
-        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/${event_id}`
+        `https://virtserver.swaggerhub.com/CW3-ALTA/EventPlanningApp/1.0.0/payment/${event_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.token}`,
+          },
+        }
       )
       .then((response) => {
         const { data } = response.data;
